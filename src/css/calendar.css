@@ -1,0 +1,85 @@
+/* 전체 캘린더 배경 제거 및 정렬 */
+.rbc-calendar {
+    background-color: white;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  }
+  
+  /* 툴바 가운데 정렬 및 폰트 커스텀 */
+  .rbc-toolbar {
+    justify-content: center;
+    border: none;
+    margin-bottom: 20px;
+  }
+  .rbc-toolbar-label {
+    font-weight: bold;
+    font-size: 1.3rem;
+    background-color: #eae6ff;
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 10px;
+  }
+  
+  /* 요일 헤더 스타일 */
+  .rbc-header {
+    background: none;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-size: 0.95rem;
+    color: #666;
+    font-weight: 500;
+    padding: 10px 0;
+  }
+  
+  /* 날짜 셀 배경 및 테두리 제거 */
+  .rbc-month-view {
+    border: none;
+  }
+  .rbc-day-bg {
+    border: none;
+  }
+  
+  /* 오늘 날짜 강조 */
+  .rbc-today {
+    background-color: #f3f5ff !important;
+    border-radius: 10px;
+  }
+  
+  /* 이벤트 디자인 */
+  .rbc-event {
+    border-radius: 6px;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* 선택 시 파란 하이라이트 제거 */
+  .rbc-selected {
+    /*background-color: #B0E0E6  !important;*/
+    box-shadow: none !important;
+  }
+  
+  /* 일정 블록 텍스트 스타일 */
+  .rbc-event-content {
+    color: white;
+    font-weight: 600;
+  }
+  
+  /* 날짜 숫자 위치 조정 */
+  .rbc-date-cell {
+    padding: 2px 0 0 0;
+    text-align: center;
+    font-size: 1rem;
+    vertical-align: top;
+  }
+  
+  /* 빈 셀 높이 조정 */
+  .rbc-row-content {
+    min-height: 20px;
+  }
+  
+  .rbc-month-row + .rbc-month-row .rbc-date-cell {
+    vertical-align: top;
+  }
