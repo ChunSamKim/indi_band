@@ -34,7 +34,7 @@ router.get("/info", async (req, res) => {
   }
 
   try {
-    // 1. 내 그룹
+    // 내 그룹
     const [myGroups] = await db.query(`
       SELECT 
         g.group_no, g.group_name, g.group_comment, g.group_imgpath,
@@ -44,7 +44,7 @@ router.get("/info", async (req, res) => {
       WHERE gm.user_id = ?
     `, [userId]);
 
-    // 2. 공개 그룹
+    // 공개 그룹
     const [publicGroups] = await db.query(`
       SELECT 
         g.group_no, g.group_name, g.group_comment, g.group_imgpath,
@@ -53,7 +53,7 @@ router.get("/info", async (req, res) => {
       WHERE g.group_status = 'PUBLIC'
     `);
 
-    // 3. 각 그룹별 태그 추가
+    // 각 그룹별 태그 추가
     const enrichWithTags = async (groupList) => {
       for (const group of groupList) {
         const [tags] = await db.query(`
@@ -96,7 +96,7 @@ router.post('/', upload.single('image'), async (req, res) => {
   await conn.beginTransaction();
 
   try {
-    // 1. 그룹 등록
+    // 그룹 등록
     const [groupResult] = await conn.query(
       `INSERT INTO tbl_group (maker_id, group_name, group_comment, group_status, group_imgpath, group_cdate)
          VALUES (?, ?, ?, ?, ?, NOW())`,
@@ -110,7 +110,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       [userId, groupNo]
     );
 
-    // 2. 해시태그 처리
+    // 해시태그 처리
     for (let tag of tagList) {
       const [existing] = await conn.query("SELECT tag_no FROM tbl_tag WHERE tag_name = ?", [tag]);
 
@@ -136,6 +136,7 @@ router.post('/', upload.single('image'), async (req, res) => {
   }
 });
 
+//그룹 상세보기
 router.get('/detail', async (req, res) => {
   const { group_no, user_id } = req.query;
 
@@ -171,6 +172,7 @@ router.get('/detail', async (req, res) => {
   }
 });
 
+//그룹 상세보기
 router.get('/list', async (req, res) => {
   const { group_no } = req.query;
 
@@ -215,7 +217,7 @@ router.get('/members', async (req, res) => {
 
     res.json(rows);
   } catch (err) {
-    console.error("그룹원 목록 조회 오류:", err);
+    console.error("그룹원 목록 조회 에러:", err);
     res.status(500).json({ message: "fail" });
   }
 });
@@ -236,13 +238,13 @@ router.post('/kick', async (req, res) => {
       res.json({ message: "fail" });
     }
   } catch (err) {
-    console.error("그룹원 추방 오류:", err);
+    console.error("그룹원 추방 에러:", err);
     res.status(500).json({ message: "error" });
   }
 });
 
 
-// 내 초대 검색용 라우트
+// 내 초대 검색
 router.get('/searchUser', async (req, res) => {
   const { keyword, group_no } = req.query;
 
@@ -263,7 +265,7 @@ router.get('/searchUser', async (req, res) => {
 
     res.json(users);
   } catch (err) {
-    console.error("그룹 초대용 사용자 검색 실패:", err);
+    console.error("그룹 초대용 사용자 검색 에러:", err);
     res.status(500).json([]);
   }
 });
@@ -315,7 +317,7 @@ router.post('/invite', async (req, res) => {
   }
 });
 
-
+//  비슷한 그룹 리스트
 router.get('/similar', async (req, res) => {
   const rawTags = req.query.tags;
   if (!rawTags) return res.status(400).send("태그 없음");
@@ -351,11 +353,12 @@ router.get('/similar', async (req, res) => {
 
     res.json(result);
   } catch (err) {
-    console.error("유사 그룹 조회 실패:", err);
+    console.error("유사 그룹 조회 에러:", err);
     res.status(500).send("서버 오류");
   }
 });
 
+//태그 기반 검색
 router.get('/search', async (req, res) => {
   const { query } = req.query;
   if (!query) return res.json([]);
@@ -384,11 +387,12 @@ router.post("/updateStatus", async (req, res) => {
     await db.query(`UPDATE tbl_group SET group_status = ? WHERE group_no = ?`, [group_status, group_no]);
     res.json({ message: "success" });
   } catch (err) {
-    console.error("공개 여부 수정 오류:", err);
+    console.error("공개 여부 수정 에러:", err);
     res.status(500).json({ message: "fail" });
   }
 });
 
+// 유저 권한 주기
 router.post('/change-role', async (req, res) => {
   const { group_no, user_id, group_auth } = req.body;
 
@@ -401,7 +405,7 @@ router.post('/change-role', async (req, res) => {
 
     res.json({ message: 'success' });
   } catch (err) {
-    console.error("권한 변경 오류:", err);
+    console.error("권한 변경 에러:", err);
     res.status(500).json({ message: '서버 오류' });
   }
 });
@@ -424,7 +428,7 @@ router.post('/updateText', async (req, res) => {
 
     res.json({ message: "success" });
   } catch (err) {
-    console.error("그룹명/소개 수정 오류:", err);
+    console.error("그룹명/소개 수정 에러:", err);
     res.status(500).json({ message: "fail" });
   }
 });
@@ -448,7 +452,7 @@ router.post('/updateImage', upload.single('group_img'), async (req, res) => {
 
     res.json({ message: "success", group_imgpath: imagePath });
   } catch (err) {
-    console.error("그룹 이미지 변경 오류:", err);
+    console.error("그룹 이미지 변경 에러:", err);
     res.status(500).json({ message: "fail" });
   }
 });

@@ -35,7 +35,7 @@ router.post("/join", async (req, res) => {
             result: result
         });
     } catch (err) {
-        console.log("회원가입 에러!", err);
+        console.log("회원가입 에러", err);
         res.status(500).json({ message: "회원가입 실패" });
     }
 });
@@ -58,12 +58,10 @@ router.post("/login", async (req, res) => {
             tokenCdate: user[0].user_cdate,
           };
   
-        //   console.log(" 로그인 성공 payload:", payload);
-  
           const token = jwt.sign(payload, JWT_KEY, { expiresIn: '1h' });
   
           result = {
-            message: "로그인 성공!",
+            message: "로그인 성공",
             user: payload, // 수정
             token: token
           };
@@ -80,7 +78,7 @@ router.post("/login", async (req, res) => {
   
       res.json(result); 
     } catch (err) {
-      console.log("에러 발생!", err);
+      console.log("로그인 에러", err);
       res.status(500).send("Server Error");
     }
   });
@@ -103,12 +101,12 @@ router.get("/info", (req, res) => {
 router.get("/logout",(req,res)=>{
     req.session.destroy(err =>{
         if(err){
-            console.log("세션 삭제 중 오류 발생");
-            res.status(500).send("로그아웃 실패");
+            console.log("로그아웃 에러");
+            res.status(500).send("로그아웃 에러");
         }else{
             res.clearCookie("connect.sid");
             res.json({
-                message : "로그아웃 성공"
+                message : "로그아웃"
             });
         }
     });
@@ -133,7 +131,7 @@ router.post("/updateProfileImg", upload.single('profile'), async (req, res) => {
     const waitForFile = async () => {
       for (let i = 0; i < 10; i++) {
         if (fs.existsSync(fullPath)) return true;
-        await new Promise(resolve => setTimeout(resolve, 100)); // 100ms 대기
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
       return false;
     };
@@ -143,7 +141,7 @@ router.post("/updateProfileImg", upload.single('profile'), async (req, res) => {
 
     res.json({ message: 'success', imgPath });
   } catch (err) {
-    console.error("프로필 이미지 업로드 실패:", err);
+    console.error("프로필 이미지 업로드 중 에러:", err);
     res.status(500).json({ message: 'fail' });
   }
 });
@@ -168,7 +166,7 @@ router.post("/updateName", async (req, res) => {
     await db.query("UPDATE user SET user_name = ? WHERE user_id = ?", [name, userId]);
     res.json({ message: "success" });
   } catch (err) {
-    console.error("이름 변경 실패:", err);
+    console.error("이름 변경 중 에러:", err);
     res.status(500).json({ message: "fail" });
   }
 });
@@ -194,11 +192,10 @@ router.post("/updatePassword", async (req, res) => {
 
     res.json({ message: "success" });
   } catch (err) {
-    console.error("비밀번호 변경 실패:", err);
+    console.error("비밀번호 변경 중 에러:", err);
     res.status(500).json({ message: "fail" });
   }
 });
 
 
-//module.exprots는 객체든 함수든 변수든 다 내보낼 수 있음. 지금은 router객체를 내보냄
 module.exports = router;

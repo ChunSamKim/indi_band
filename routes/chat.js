@@ -25,14 +25,14 @@ router.post("/createRoom", async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // 1. 채팅방 생성
+    // 채팅방 생성
     const [roomResult] = await conn.query(`
         INSERT INTO chat_room (title, profile_img, created_at)
         VALUES (?, ?, NOW())
       `, [title, defaultProfileImg]);
     const chat_no = roomResult.insertId;
 
-    // 2. 채팅방 생성자를 chat_member에 등록
+    // 채팅방 생성자를 chat_member에 등록
     await conn.query(`
         INSERT INTO chat_member (chat_no, user_id, joined_at)
         VALUES (?, ?, NOW())
@@ -120,7 +120,7 @@ router.post('/updateLastRead', async (req, res) => {
   }
 });
 
-// 사용자 이름으로 검색 (LIKE)
+// 사용자 이름으로 검색
 router.get("/searchUser", async (req, res) => {
   const keyword = req.query.keyword;
 
@@ -178,27 +178,27 @@ router.post('/invite', async (req, res) => {
       return res.json({ message: "already" });
     }
 
-    // 1. 채팅방 멤버 추가
+    // 채팅방 멤버 추가
     await db.query(
       "INSERT INTO chat_member (chat_no, user_id, last_read) VALUES (?, ?, NOW())",
       [chat_no, user_id]
     );
 
-    // 2. 채팅방 이름 조회
+    // 채팅방 이름 조회
     const [[chatRoom]] = await db.query(
       `SELECT title FROM chat_room WHERE chat_no = ?`,
       [chat_no]
     );
     const notiTitle = `채팅방 '${chatRoom.title}'에 초대되었습니다.`;
 
-    // 3. 알림 저장 (type C = chat 초대)
+    // 알림 저장 
     const [result] = await db.query(
       `INSERT INTO notification (noti_type, noti_title, noti_receiver, noti_isread, chat_no, created_at)
        VALUES ('C', ?, ?, 'N', ?, now())`,
       [notiTitle, user_id, chat_no]
     );
 
-    // 4. 실시간 알림 전송
+    // 실시간 알림 전송
     io?.to(`noti_${user_id}`).emit("pushNotification", {
       type: 'C',
       title: "채팅방 초대",
@@ -226,7 +226,6 @@ router.post('/leaveRoom', async (req, res) => {
       [chat_no, user_id]
     );
 
-    // 삭제된 행이 없다면 이미 나간 상태로 판단
     if (result.affectedRows === 0) {
       return res.json({ message: "already_left" });
     }
@@ -239,5 +238,4 @@ router.post('/leaveRoom', async (req, res) => {
 });
 
 
-//module.exprots는 객체든 함수든 변수든 다 내보낼 수 있음. 지금은 router객체를 내보냄
 module.exports = router;

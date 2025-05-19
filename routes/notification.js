@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+//안읽은 알림 수
 router.get('/unreadCount', async (req, res) => {
   const { user_id } = req.query;
   try {
@@ -26,12 +27,11 @@ router.get('/unreadCount', async (req, res) => {
     );
     res.json({ count: rows[0].count });
   } catch (err) {
-    console.error('알림 수 조회 실패:', err);
+    console.error('안읽은 알림 가져오기 에러:', err);
     res.status(500).json({ count: 0 });
   }
 });
 
-// 그룹 가입 요청 알림
 // 그룹 가입 요청 알림
 router.post('/join-request', async (req, res) => {
   const { group_no, user_id } = req.body;
@@ -54,7 +54,7 @@ router.post('/join-request', async (req, res) => {
       [group_no]
     );
 
-    // 해당 그룹의 관리자 조회 (group_manage 기준)
+    // 해당 그룹의 관리자 조회
     const [owners] = await db.query(
       `SELECT user_id FROM group_manage 
        WHERE group_no = ? AND group_auth = 'O'`,
@@ -83,7 +83,7 @@ router.post('/join-request', async (req, res) => {
 
     res.json({ message: "success" });
   } catch (err) {
-    console.error("가입 요청 실패:", err);
+    console.error("가입 요청 중 에러:", err);
     res.status(500).json({ message: "server_error" });
   }
 });
@@ -103,7 +103,7 @@ router.get('/unreadList', async (req, res) => {
 
     res.json(rows);
   } catch (err) {
-    console.error("알림 조회 실패:", err);
+    console.error("알림 목록 가져오기 에러:", err);
     res.status(500).json({ message: "error" });
   }
 });
@@ -119,12 +119,12 @@ router.post('/markRead', async (req, res) => {
 
     res.json({ message: "success" });
   } catch (err) {
-    console.error("알림 읽음 처리 실패:", err);
+    console.error("알림 읽기 에러:", err);
     res.status(500).json({ message: "error" });
   }
 });
 
-// 그룹 초대 수락 (I)
+// 그룹 초대 수락 
 router.post('/accept-invite', async (req, res) => {
   const { group_no, user_id, noti_no } = req.body;
   try {
@@ -136,24 +136,24 @@ router.post('/accept-invite', async (req, res) => {
     await db.query(`UPDATE notification SET noti_isread = 'Y' WHERE noti_no = ?`, [noti_no]);
     res.json({ message: 'accepted' });
   } catch (err) {
-    console.error('초대 수락 실패:', err);
+    console.error('초대 수락 중 에러:', err);
     res.status(500).json({ message: 'fail' });
   }
 });
 
-// 그룹 초대 거절 (I)
+// 그룹 초대 거절 
 router.post('/reject-invite', async (req, res) => {
   const { noti_no } = req.body;
   try {
     await db.query(`UPDATE notification SET noti_isread = 'Y' WHERE noti_no = ?`, [noti_no]);
     res.json({ message: 'rejected' });
   } catch (err) {
-    console.error('초대 거절 실패:', err);
+    console.error('초대 거절 중 에러:', err);
     res.status(500).json({ message: 'fail' });
   }
 });
 
-// 그룹 가입 요청 수락 (R)
+// 그룹 가입 요청 수락 
 router.post('/accept-request', async (req, res) => {
   const { group_no, user_id, noti_no } = req.body;
   try {
@@ -165,19 +165,19 @@ router.post('/accept-request', async (req, res) => {
     await db.query(`UPDATE notification SET noti_isread = 'Y' WHERE noti_no = ?`, [noti_no]);
     res.json({ message: 'request_accepted' });
   } catch (err) {
-    console.error('가입 요청 수락 실패:', err);
+    console.error('가입 수락 중 에러:', err);
     res.status(500).json({ message: 'fail' });
   }
 });
 
-// 그룹 가입 요청 거절 (R)
+// 그룹 가입 요청 거절 
 router.post('/reject-request', async (req, res) => {
   const { noti_no } = req.body;
   try {
     await db.query(`UPDATE notification SET noti_isread = 'Y' WHERE noti_no = ?`, [noti_no]);
     res.json({ message: 'request_rejected' });
   } catch (err) {
-    console.error('가입 요청 거절 실패:', err);
+    console.error('가입 요청 중 에러:', err);
     res.status(500).json({ message: 'fail' });
   }
 });

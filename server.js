@@ -9,7 +9,7 @@ const cors = require('cors');
 const session = require('express-session');
 const path = require('path');
 const db = require('./db');
-const app = express(); // 먼저 app 선언
+const app = express(); 
 const http = require('http');
 const server = http.createServer(app); // app 기반 http 서버 생성
 
@@ -21,7 +21,8 @@ const io = new Server(server, {
     credentials: true
   }
 });
-//라우터에서 io 사용 가능
+
+//라우터에서 io 사용 가능하게 함
 app.set('io', io); 
 
 io.on('connection', (socket) => {
@@ -39,19 +40,19 @@ io.on('connection', (socket) => {
     console.log(`사용자 ${socket.id} → 그룹 ${groupNo} 입장`);
   });
 
-  // 메시지 수신 및 그룹 전파
+  // 메시지 수신/그룹 전파
   socket.on('groupMessage', async (data) => {
     const { groupNo, senderId, message, sentAt } = data;
 
     try {
-      // 1. 메시지 저장
+      // 메시지 저장
       const [result] = await db.query(
         `INSERT INTO chat_message (chat_no, user_id, content, sent_at)
        VALUES (?, ?, ?, NOW())`,
         [groupNo, senderId, message]
       );
 
-      // 2. 사용자 이름 조회
+      // 사용자 이름 조회
       const [[user]] = await db.query(
         `SELECT user_name FROM user WHERE user_id = ?`,
         [senderId]
@@ -59,7 +60,7 @@ io.on('connection', (socket) => {
 
       const senderName = user?.user_name || senderId;
 
-      // 3. 메시지 전송 payload
+      // 메시지 전송
       const payload = {
         groupNo,
         senderId,
@@ -69,10 +70,10 @@ io.on('connection', (socket) => {
         message_no: result.insertId
       };
 
-      // 4. 그룹 채팅방에 전송
+      // 그룹 채팅방에 전송
       io.to(`group_${groupNo}`).emit('groupMessage', payload);
 
-      // 5. 알림 대상자 조회 (본인 제외)
+      //  알림 대상자 조회 
       const [members] = await db.query(
         `SELECT user_id FROM chat_member WHERE chat_no = ? AND user_id != ?`,
         [groupNo, senderId]

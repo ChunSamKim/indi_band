@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
         cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname); // 확장자 유지
+        const ext = path.extname(file.originalname); 
         const randomName = crypto.randomBytes(16).toString('hex'); // 32자리 랜덤 문자열
         cb(null, `${randomName}${ext}`);
     }
@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
+// plan 리스트
 router.get('/list', async (req, res) => {
   const group_no = req.query.group_no;
 
@@ -39,7 +39,7 @@ router.get('/list', async (req, res) => {
   }
 });
 
-
+// plan 추가
 router.post('/add', async (req, res) => {
     const { group_no, plan_title, plan_contents, start_date, end_date } = req.body;
   
@@ -51,7 +51,7 @@ router.post('/add', async (req, res) => {
   
       res.json({ message: 'success' });
     } catch (err) {
-      console.error('일정 등록 오류:', err);
+      console.error('일정 등록 중 에러:', err);
       res.status(500).json({ message: 'fail' });
     }
   });
@@ -77,7 +77,7 @@ router.post('/add', async (req, res) => {
     const { plan_no } = req.body;
   
     try {
-      await db.query(`DELETE FROM plan WHERE plan_no = ?`, [plan_no]);
+      await db.query(`DELETE FROM planㄴ WHERE plan_no = ?`, [plan_no]);
       res.json({ message: 'success' });
     } catch (err) {
       console.error('일정 삭제 오류:', err);

@@ -111,7 +111,7 @@ router.post('/like', async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error in liking feed');
+    res.status(500).send('좋아요 에러');
   }
 });
 
@@ -126,7 +126,7 @@ router.post('/unlike', async (req, res) => {
     res.json({ result: 'unliked' });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error in unliking feed');
+    res.status(500).send('좋아요 취소 에러');
   }
 });
 
@@ -141,10 +141,11 @@ router.get('/liked', async (req, res) => {
     res.json({ liked: rows.length > 0 });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error checking liked state');
+    res.status(500).send('좋아요 여부 확인 에러');
   }
 });
 
+//추가
 router.post('/add', upload.array('images'), async (req, res) => {
   const { group_no, maker_id, feed_title, feed_contents } = req.body;
   const files = req.files;
@@ -154,7 +155,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // 1. feed 등록
+    //  feed 등록
     const [result] = await conn.query(
       `INSERT INTO feed (group_no, maker_id, feed_title, feed_contents, feed_cdate, feed_status)
          VALUES (?, ?, ?, ?, NOW(), 'PUBLIC')`,
@@ -163,9 +164,9 @@ router.post('/add', upload.array('images'), async (req, res) => {
 
     const feed_no = result.insertId;
 
-    // 2. feed_image 등록
+    // feed_image 등록
     for (let i = 0; i < files.length; i++) {
-      const path = files[i].path.replace(/\\/g, '/'); // 윈도우 경로 대응
+      const path = files[i].path.replace(/\\/g, '/');
       await conn.query(
         `INSERT INTO feed_image (feed_no, image_path, image_order)
            VALUES (?, ?, ?)`,
@@ -185,7 +186,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
 });
 
 
-// 기존 댓글 등록 + 대댓글 지원
+// 댓글/대댓글
 router.post('/comment', async (req, res) => {
   const { feed_no, user_id, comment_contents, parent_comment_no = null } = req.body;
 
@@ -199,14 +200,14 @@ router.post('/comment', async (req, res) => {
         VALUES (?, ?, ?, NOW(), ?)
       `;
     await db.query(sql, [feed_no, user_id, comment_contents, parent_comment_no]);
-    res.json({ message: '댓글 등록 완료' });
+    res.json({ message: '' });
   } catch (err) {
     console.error('댓글 등록 오류:', err);
     res.status(500).send('Server error');
   }
 });
 
-// 댓글 + 대댓글 불러오기 + 좋아요 수 포함
+// 댓글 ,대댓글 ,좋아요
 router.get('/comments', async (req, res) => {
   const { feed_no, user_id } = req.query;
   if (!feed_no) return res.status(400).json({ message: 'feed_no 필요' });
@@ -273,7 +274,7 @@ router.post('/edit', upload.array('new_images'), async (req, res) => {
   const { feed_no, feed_title, feed_contents } = req.body;
   const removedPathsRaw = req.body['removed_image_paths'];
 
-  // 삭제 경로 배열화
+  // 삭제 경로
   const removedPaths = removedPathsRaw
     ? Array.isArray(removedPathsRaw)
       ? removedPathsRaw
@@ -285,7 +286,7 @@ router.post('/edit', upload.array('new_images'), async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // 1. feed 테이블 수정
+    // feed 테이블 수정
     await conn.query(
       `
         UPDATE feed
@@ -295,7 +296,7 @@ router.post('/edit', upload.array('new_images'), async (req, res) => {
       [feed_title, feed_contents, feed_no]
     );
 
-    // 2. 삭제할 이미지 경로가 있을 경우 삭제
+    // 삭제할 이미지 경로가 있을 경우 삭제
     if (removedPaths.length > 0) {
       const placeholders = removedPaths.map(() => '?').join(',');
       await conn.query(
@@ -304,10 +305,10 @@ router.post('/edit', upload.array('new_images'), async (req, res) => {
       );
     }
 
-    // 3. 새 이미지 추가
+    // 새 이미지 추가
     const files = req.files || [];
 
-    // 기존 이미지 중 가장 큰 image_order 조회
+    //order로 검색
     const [[{ maxOrder }]] = await conn.query(
       `SELECT MAX(image_order) AS maxOrder FROM feed_image WHERE feed_no = ?`,
       [feed_no]
@@ -315,7 +316,7 @@ router.post('/edit', upload.array('new_images'), async (req, res) => {
     let startOrder = (maxOrder ?? -1) + 1;
 
     for (let i = 0; i < files.length; i++) {
-      const image_path = "uploads/" + files[i].filename; // 슬래시 없이 저장
+      const image_path = "uploads/" + files[i].filename;
       await conn.query(
         `
           INSERT INTO feed_image (feed_no, image_path, image_order)
@@ -325,7 +326,7 @@ router.post('/edit', upload.array('new_images'), async (req, res) => {
       );
     }
 
-    // 4. 최신 이미지 목록 반환
+    // 최신 이미지 목록 반환
     const [updatedImages] = await conn.query(
       `
         SELECT image_path FROM feed_image
