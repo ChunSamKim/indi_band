@@ -62,7 +62,6 @@ function ProfileEdit() {
       setPreviewUrl(null);
       setNewImg(null);
 
-      // 🔄 토큰 갱신 없이 프론트 상태만 변경 (원한다면 토큰도 새로 저장 필요)
     } else {
       alert("이미지 변경 실패");
     }

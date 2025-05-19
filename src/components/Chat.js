@@ -244,7 +244,7 @@ function Chat() {
     const handler = (msg) => {
       console.log("받은 메시지:", msg);
 
-      // 현재 열려 있는 방에 수신된 경우 → 채팅에 출력
+      // 현재 열려 있는 방에 수신된 경우 채팅에 출력
       if (msg.groupNo === selectedRoom?.chat_no) {
         setMessages(prev => [...prev, {
           ...msg,
@@ -254,7 +254,7 @@ function Chat() {
           message_no: msg.message_no || `recv-${Date.now()}`
         }]);
       } else {
-        // 다른 방이면 → 해당 채팅방의 unread_count를 +1
+        // 다른 방이면 해당 채팅방의 unread_count를 +1
         setChatRooms(prev =>
           prev.map(r =>
             r.chat_no === msg.groupNo
@@ -378,7 +378,7 @@ function Chat() {
             }}
           />
 
-          {/* 좌측: 채팅방 목록 */}
+          {/* 좌측 채팅방 목록 */}
           <Box sx={{ width: '33.33%', display: 'flex', flexDirection: 'column', borderRight: '2px solid #64b5f6' }}>
             <Box sx={{ flex: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #64b5f6' }}>
               <Avatar
@@ -469,7 +469,7 @@ function Chat() {
             </Box>
           </Box>
 
-          {/* 우측: 채팅 상세 */}
+          {/* 우측 채팅 상세 */}
           <Box sx={{ width: '66.66%', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, borderBottom: '2px solid #64b5f6' }}>
               <Typography variant="h6">

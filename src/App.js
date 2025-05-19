@@ -8,7 +8,6 @@ import Register from './components/Register';
 import MyPage from './components/MyPage';
 import Menu from './components/Menu';
 import Group from './components/Group';
-import Lobby from './components/Lobby';
 import { jwtDecode } from 'jwt-decode';
 import RecoilEx from './components/RecoilEx';
 import AddGroup from './components/AddGroup';

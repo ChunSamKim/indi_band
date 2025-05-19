@@ -62,7 +62,7 @@ function InviteModal({ open, onClose, chatNo }) {
         <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
             <DialogTitle>채팅 초대</DialogTitle>
             <DialogContent sx={{ height: 300, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {/* 검색 영역 (1/4) */}
+                {/* 검색 영역 */}
                 <Box sx={{ flex: 1 }}>
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         <TextField

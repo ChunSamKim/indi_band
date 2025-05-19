@@ -74,7 +74,7 @@ function GroupMenu({
             position: 'fixed',
             right: '5%',
             top: 100,
-            width: 350, //  20% 너비 증가
+            width: 350, 
             backgroundColor: '#e3f2fd',
             borderRadius: 2,
             boxShadow: 2,

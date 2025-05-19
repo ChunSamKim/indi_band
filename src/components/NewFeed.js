@@ -121,7 +121,7 @@ function NewFeed({ open, onClose, groupNo, onPostSuccess }) {
             )}
           </div>
 
-          {/* 썸네일 Swiper 중앙 정렬 */}
+          {/* 썸네일 Swiper */}
           {files.length > 0 && (
             <div style={{
               width: '100%',
@@ -196,7 +196,7 @@ function NewFeed({ open, onClose, groupNo, onPostSuccess }) {
                             const updated = prev.filter((_, i) => i !== idx);
                             const newIndex = Math.max(0, updated.length - 1);
 
-                            // 🔁 안전하게 렌더 후 setState
+                            
                             setTimeout(() => {
                               setActiveIndex(newIndex);
                               mainSwiperRef.current?.slideTo(newIndex);

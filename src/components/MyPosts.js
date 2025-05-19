@@ -6,7 +6,7 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { jwtDecode } from 'jwt-decode';
 import FeedDetailModal from './FeedDetailModal';
-import FeedEditModal from './FeedEditModal'; // 🔥 추가
+import FeedEditModal from './FeedEditModal';
 
 function MyPosts() {
   const [posts, setPosts] = useState([]);

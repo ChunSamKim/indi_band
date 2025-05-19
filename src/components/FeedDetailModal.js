@@ -67,7 +67,7 @@ function FeedDetailModal({
           overflow: 'hidden'
         }}
       >
-        {/* 왼쪽: 이미지 + 피드 내용 */}
+        {/* 왼쪽 이미지, 피드 내용 */}
         <div style={{ flex: 1.1, padding: '20px', overflowY: 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
             <img
@@ -180,7 +180,7 @@ function FeedDetailModal({
           </div>
         </div>
 
-        {/* 오른쪽: 댓글 */}
+        {/* 오른쪽 댓글 */}
         <div style={{
           flex: 0.8,
           display: 'flex',

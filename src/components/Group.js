@@ -64,7 +64,7 @@ function Group() {
                         </IconButton>
                     </Box>
 
-                    {/* 슬라이드 카드 */}
+                    {/* 슬라이드 가능한 박스*/}
                     <Box
                         sx={{
                             display: 'flex',

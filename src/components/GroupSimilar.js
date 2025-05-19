@@ -19,7 +19,7 @@ function GroupSimilar() {
     if (userId && tags.length > 0) {
       handleSearch();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [userId]);
 
   // 사용자 정보 및 초기 태그 설정
@@ -37,7 +37,7 @@ function GroupSimilar() {
     }
   }, [searchParams]);
 
-  // 검색 요청 함수 (버튼으로만 트리거)
+  // 검색 요청 함수
   const handleSearch = () => {
     if (!tags.length || !userId) return;
 

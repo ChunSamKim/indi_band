@@ -35,7 +35,7 @@ const localizer = dateFnsLocalizer({
     getDay,
     locales,
 });
-
+//제발 나중에 상세, 플랜, 피드 분리하자
 function GroupDetail() {
     const [searchParams] = useSearchParams();
     const groupNo = searchParams.get("group_no");
@@ -155,7 +155,7 @@ function GroupDetail() {
     }, [groupNo]);
 
 
-    const handleAddFeed = () => {
+    /*const handleAddFeed = () => {
         const token = localStorage.getItem("token");
         if (!token) return alert("로그인이 필요합니다.");
 
@@ -197,7 +197,7 @@ function GroupDetail() {
                 console.error("등록 실패:", err);
                 alert("오류 발생");
             });
-    };
+    };*/
 
 
     const eventPropGetter = (event) => {

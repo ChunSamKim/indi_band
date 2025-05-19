@@ -62,6 +62,8 @@ function GroupInviteModal({ open, onClose, groupNo }) {
                         user.user_id === user_id ? { ...user, already_member: true } : user
                     )
                 );
+
+                
             } else if (data.message === "already") {
                 alert("이미 그룹에 속한 사용자입니다.");
             } else if (data.message === 'already_invited') {
